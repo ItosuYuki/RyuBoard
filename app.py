@@ -15,7 +15,7 @@ app = Flask(__name__)
 # 乱数を設定
 app.config['SECRET_KEY'] = os.urandom(24)
 base_dir = os.path.dirname(__file__)
-database = 'sqlite:///' + os.path.join(base_dir, 'CurrentThreads.sqlite')
+database = 'sqlite:///' + os.path.join(base_dir, 'data.sqlite')
 app.config['SQLALCHEMY_DATABASE_URI'] = database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ★db変数を使用してSQLAlchemyを操作できる
@@ -43,6 +43,8 @@ class Thread(db.Model):
 class Log(db.Model):
     # テーブル名
     __tablename__ = 'past_logs'
+    # Threadとのリレーション
+    thread = db.relationship('Thread', backref='logs') 
 
     # 識別子
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -51,7 +53,10 @@ class Log(db.Model):
     # タイトル
     title = db.Column(db.String(200), nullable=False)
     # 作成日時
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    created_at = db.Column(db.DateTime, nullable=False) #後にコピー
+    # スレッドが落ちた日時
+    down_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
+
 
 class Post(db.Model):
     # テーブル名
@@ -88,6 +93,20 @@ def past_log_list():
     # 作成日時が新しい順に取り出す
     logs = Log.query.order_by(Log.created_at.desc()).all()
     return render_template('pastLog.html', logs=logs)
+
+# 現行スレッド表示
+@app.route('/<int:id>')
+def show_thread(id):
+    # 対象データ取得
+    thread = Thread.query.get(id)
+    return render_template('.html', thread=thread)
+
+# 過去ログ表示
+@app.route('/PastLog/<int:id>')
+def show_thread(id):
+    # 対象データ取得
+    log = Log.query.get(id)
+    return render_template('.html', log=log)
 # ==================================================
 # 実行
 # ==================================================
