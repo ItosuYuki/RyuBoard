@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PastLog</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pastLog.css') }}">
+</head>
+<body>
+    <header>
+        <a href="#">[←TOPへ戻る]</a>
+        <h1>過去ログ一覧</h1>
+    </header>
+    <div>
+        <form method="POST" action="{{ url_for('update_task', task_id=task.id) }}">
+            <label for="content">過去ログ検索</label><br>
+            <input type="text" id="content" name="content"  class="text-input"><br>
+            <input type="submit" value="検索" class="button">
+        </form>
+    </div>
+    <main>
+        <ul>
+        {% for log in logs %}
+            <li>
+                <div class="title">
+                    {{log.title}}
+                </div>
+                <div class="date">
+                    {{log.created_at.strftime('%Y-%m-%d')}} - {{log.down_at.strftime('%Y-%m-%d')}}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    </main>
+</body>
+</html>
