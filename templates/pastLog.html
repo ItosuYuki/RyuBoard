@@ -12,22 +12,22 @@
         <h1>過去ログ一覧</h1>
     </header>
     <div>
-        <form method="POST" action="{{ url_for('update_task', task_id=task.id) }}">
+        <form method="GET" action="{{ url_for('search_PastLog') }}">
             <label for="content">過去ログ検索</label><br>
             <div class="input-group">
-                <input type="text" id="content" name="content" placeholder="キーワード入力欄" class="text-input">
+                <input type="text" id="search" name="serach_PastLog" placeholder="キーワード入力欄" class="text-input" required>
                 <input type="submit" value="検索" class="button">
             </div>
         </form>
     </div>
     <main>
-        <ul>
+        <ul class="log-list">
         {% for log in logs %}
-            <li>
-                <div class="title">
+            <li class="log-item">
+                <div class="log-title">
                     {{log.title}}
                 </div>
-                <div class="date">
+                <div class="log-date">
                     {{log.created_at.strftime('%Y-%m-%d')}} - {{log.down_at.strftime('%Y-%m-%d')}}
                 </div>
             </li>

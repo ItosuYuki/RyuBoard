@@ -67,3 +67,36 @@ header h1 {
 .button:hover {
     background-color: #333;
 }
+
+main {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.log-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.log-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #444;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+.log-title {
+    font-weight: bold;
+    flex: 1;
+}
+
+.log-dates {
+    white-space: nowrap;
+    margin-left: 20px;
+    font-family: monospace;
+}
