@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PastLog</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pastLog.css') }}">
+    <link rel="stylesheet" href="../static/pastLog.css" type="text/css">
 </head>
 <body>
     <header>
@@ -14,8 +14,10 @@
     <div>
         <form method="POST" action="{{ url_for('update_task', task_id=task.id) }}">
             <label for="content">過去ログ検索</label><br>
-            <input type="text" id="content" name="content"  class="text-input"><br>
-            <input type="submit" value="検索" class="button">
+            <div class="input-group">
+                <input type="text" id="content" name="content" placeholder="キーワード入力欄" class="text-input">
+                <input type="submit" value="検索" class="button">
+            </div>
         </form>
     </div>
     <main>
