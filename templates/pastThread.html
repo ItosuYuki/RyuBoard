@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ log.title }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #fff;
+        }
+        header {
+            background-color: #ccc;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .back-link {
+            font-size: 0.9em;
+        }
+        .thread-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .post {
+            border-bottom: 1px solid #aaa;
+            padding: 10px;
+        }
+        .post-meta {
+            font-size: 0.9em;
+        }
+        .notice {
+            background-color: #eee;
+            padding: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="back-link">
+        <a href="{{ url_for('past_log_list') }}">←過去ログ一覧へ</a>
+    </div>
+    <div class="thread-title">{{ log.title }}</div>
+    <div style="width: 80px;"></div>
+</header>
+
+{% for post in posts %}
+    <div class="post">
+        <div class="post-meta">{{ loop.index }}. {{ post.name or '名無し' }} ({{ post.created_at.strftime('%Y/%m/%d　%H:%M') }})</div>
+        <div class="post-content">{{ post.content | e }}</div>
+    </div>
+{% else %}
+    <p style="padding: 10px;">このスレッドには書き込みがありません。</p>
+{% endfor %}
+
+<div class="notice">
+    ※ このスレッドは過去ログです。書き込みはできません。
+</div>
+
+</body>
+</html>
