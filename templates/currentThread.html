@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -71,6 +71,112 @@
 
         <button type="submit">書き込む</button>
     </form>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ thread.title }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #fff;
+        }
+        header {
+            background-color: #ccc;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .back-link {
+            font-size: 0.9em;
+        }
+        .thread-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .post {
+            border-bottom: 1px solid #aaa;
+            padding: 10px;
+        }
+        .post-meta {
+            font-size: 0.9em;
+        }
+        .form-section {
+            background-color: #ccc;
+            padding: 10px;
+            font-weight: bold;
+        }
+        form {
+            padding: 10px;
+            background-color: #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        label {
+            font-size: 0.9em;
+        }
+        input, textarea {
+            padding: 5px;
+            border: 1px solid #999;
+            background-color: #fff;
+            font-size: 1em;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .form-submit {
+            display: flex;
+            justify-content: flex-end;
+        }
+        button {
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="back-link">
+        <a href="{{ url_for('current_thread_list') }}">←TOPへ戻る</a>
+    </div>
+    <div class="thread-title">{{ thread.title }}</div>
+    <div style="width: 80px;"></div> <!-- ダミー幅で中央化キープ -->
+</header>
+
+{% for post in posts %}
+    <div class="post">
+        <div class="post-meta">{{ loop.index }}. {{ post.name or '名無し' }} ({{ post.created_at.strftime('%Y/%m/%d　%H:%M') }})</div>
+        <div class="post-content">{{ post.content | e }}</div>
+    </div>
+{% else %}
+    <p>まだ書き込みがありません。</p>
+{% endfor %}
+
+{% if is_active %}
+<div class="form-section">新しく書き込む</div>
+<form action="{{ url_for('add_post', thread_id=thread.id) }}" method="post">
+    <label>名前（省略可）</label>
+    <input type="text" name="name" placeholder="名前を入力">
+
+    <label>書き込み内容</label>
+    <textarea name="content" rows="5" placeholder="ここに書いてください" required></textarea>
+
+    <div class="form-submit">
+        <button type="submit">書き込む</button>
+    </div>
+</form>
+{% else %}
+    <p style="padding:10px;">※ このスレッドは過去ログに移動済みのため、書き込みできません。</p>
+{% endif %}
 
 </body>
 </html>
