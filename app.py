@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
@@ -39,9 +39,8 @@ class Thread(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     # 最終更新日時
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
-
-    flag = db.Column(db.Boolean, nullable=False)
-
+    # 現行かログか
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Post(db.Model):
@@ -77,7 +76,7 @@ def current_thread_list():
 @app.route('/PastLog/')
 def past_log_list():
     # 作成日時が新しい順に取り出す
-    logs = Log.query.order_by(Log.created_at.desc()).all()
+    logs = Thread.query.filter_by(flag=False).order_by(Thread.created_at.desc()).all()
     return render_template('pastLog.html', logs=logs)
 
 # 現行スレッド表示
@@ -91,8 +90,54 @@ def show_thread(id):
 @app.route('/PastLog/<int:id>')
 def show_thread1(id): # 名前+1
     # 対象データ取得
-    log = Log.query.get(id)
+    log = Thread.query.filter_by(id=id, flag=False).first()
     return render_template('.html', log=log)
+#〜〜〜〜〜ここから投稿したフォームをデータベースに送るルーティング（漢）〜〜〜〜〜〜〜
+
+@app.route('/create_thread', methods=['POST'])
+def create_thread():
+    # フォームから送信されたデータを取得
+    title = request.form['thread_title']
+    content = request.form['content']
+    ip_address = request.remote_addr  # ユーザーのIPアドレスを取得
+
+    # 新しいスレッドをデータベースに追加
+    new_thread = Thread(
+        title=title,
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+        flag=True  # 初期状態ではスレッドは有効
+    )
+    db.session.add(new_thread)
+    db.session.commit()
+
+    # 新しい投稿をデータベースに追加
+    new_post = Post(
+        threads_id=new_thread.id,
+        name="名無しさん",  # 投稿者名（仮）
+        ip_address=ip_address,
+        content=content,
+        created_at=datetime.now(),
+        parent_post_id=None  # 最初の投稿なので親IDはNone
+    )
+    db.session.add(new_post)
+    db.session.commit()
+
+    # スレッド一覧ページにリダイレクト
+    return redirect(url_for('current_thread_list'))
+
+#〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+
+
+@app.route('/search')
+def search_threads():
+    keyword = request.args.get('search', '')
+    if keyword:
+        threads = Thread.query.filter(Thread.title.ilike(f"%{keyword}%"),Thread.flag == False).all()
+    else:
+        threads = []
+
+    return render_template('searchPastLog.html', threads=threads, keyword=keyword)
 # ==================================================
 # 実行
 # ==================================================
