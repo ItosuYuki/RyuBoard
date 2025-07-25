@@ -4,21 +4,82 @@
   margin: 0 auto;
 }
 
-.cards {
-  display: flex;
-  justify-content: space-around;
+.title {
+    display: flex;
+    background: #eeeeee5b; 
+    border: 1px solid #ccc;
+    text-align: center;
 }
 
+.cards {
+    display: flex;
+    justify-content: center;
+    }
+
 .card {
-  background: #eee;
-  padding: 10px;
-  border: 1px solid #ccc;
-  width: px
+    padding: 10px;
+    border: 1px solid #999;
+    width: 1125px;
+    border-bottom: none;
+
 }
 
 .display {
     align-items: center; 
-    border: 1px solid #ccc;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #999;
+}
+
+.txt{
+    display: inline-block;
+    width: 100%;
+    padding: 0.5em 0.5em;
+    line-height: 1;
+    border: 1px solid #999;
+    box-sizing: border-box;
+    background: #f2f2f2;
+    margin: 0.1em 0;
+}
+
+textarea {
+    font-size: 150%;
+    resize: none;
+}
+
+input {
+    font-size: 100%;
+    align-items: stretch;
+}
+
+.frame {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.right {
+    text-align: right;
+}
+
+.button {
+    padding: 8px 16px;
+    background-color: #555;
+    color: white;
+    border-radius: 5px; 
+    font-size: 16px;
+    cursor: pointer;
+    text-align: right;
+}
+
+.space {
+  margin-bottom: 50px;
+  padding: 10px;
+    border: 1px solid black;
+}
+
+
+.text-input {
+    flex-grow: 1; 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    background: #f2f2f2;
 }

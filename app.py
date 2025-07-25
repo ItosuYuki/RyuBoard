@@ -29,7 +29,7 @@ Migrate(app, db)
 # 現行スレッド
 class Thread(db.Model):
     # テーブル名
-    __tablename__ = 'current_threads'
+    __tablename__ = 'threads'
 
     # 識別子
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -39,23 +39,9 @@ class Thread(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     # 最終更新日時
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
-#　過去ログ
-class Log(db.Model):
-    # テーブル名
-    __tablename__ = 'past_logs'
-    # Threadとのリレーション
-    thread = db.relationship('Thread', backref='logs') 
 
-    # 識別子
-    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
-    # 現行スレッドのid
-    threads_id = db.Column(db.Integer, db.ForeignKey('current_threads.id'), nullable=False)
-    # タイトル
-    title = db.Column(db.String(200), nullable=False)
-    # 作成日時
-    created_at = db.Column(db.DateTime, nullable=False) #後にコピー
-    # スレッドが落ちた日時
-    down_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    flag = db.Column(db.Boolean, nullable=False)
+
 
 
 class Post(db.Model):
@@ -65,7 +51,7 @@ class Post(db.Model):
     # 識別子
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     # 現行スレッドのid
-    threads_id = db.Column(db.Integer, db.ForeignKey('current_threads.id'), nullable=False)
+    threads_id = db.Column(db.Integer, db.ForeignKey('threads.id'), nullable=False)
     # 名前
     name = db.Column(db.String(200))
     # ipアドレス
@@ -103,7 +89,7 @@ def show_thread(id):
 
 # 過去ログ表示
 @app.route('/PastLog/<int:id>')
-def show_thread(id):
+def show_thread1(id): # 名前+1
     # 対象データ取得
     log = Log.query.get(id)
     return render_template('.html', log=log)
