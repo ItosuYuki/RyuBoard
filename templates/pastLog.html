@@ -8,11 +8,13 @@
 </head>
 <body>
     <header>
+
         <a href="{{ url_for('current_thread_list')}}">[←TOPへ戻る]</a>
         <h1>過去ログ一覧</h1>
     </header>
     <div>
         <form method="POST" action="{{ url_for('search_log') }}">
+
             <label for="content">過去ログ検索</label><br>
             <div class="input-group">
                 <input type="text" id="search" name="search_PastLog" placeholder="キーワード入力欄" class="text-input" required>
