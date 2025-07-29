@@ -2,12 +2,18 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from datetime import datetime
+from datetime import datetime, timedelta
+from flask_apscheduler import APScheduler
+
+# set configuration values
+class Config:
+    SCHEDULER_API_ENABLED = True
 
 # ==================================================
 # インスタンス生成
 # ==================================================
 app = Flask(__name__)
+app.config.from_object(Config())
 
 # ==================================================
 # Flaskに対する設定
@@ -40,7 +46,7 @@ class Thread(db.Model):
     # 最終更新日時
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     # 現行かログか
-    is_active = db.Column(db.Boolean, nullable=False, default=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
 
 
 class Post(db.Model):
@@ -70,28 +76,30 @@ class Post(db.Model):
 def current_thread_list():
     # 最終更新日時が新しい順に取り出す
     threads = Thread.query.order_by(Thread.updated_at.desc()).all()
-    return render_template('currentThread.html', threads=threads)
+    return render_template('home.html', threads=threads)
 
 # 過去ログ一覧
 @app.route('/PastLog/')
 def past_log_list():
     # 作成日時が新しい順に取り出す
-    logs = Thread.query.filter_by(flag=False).order_by(Thread.created_at.desc()).all()
+    logs = Thread.query.filter_by(is_active=False).order_by(Thread.created_at.desc()).all()
     return render_template('pastLog.html', logs=logs)
 
 # 現行スレッド表示
 @app.route('/<int:id>')
 def show_thread(id):
-    # 対象データ取得
+    # 対象データ取得a
     thread = Thread.query.get(id)
-    return render_template('.html', thread=thread)
+    post = Post.query.filter_by(threads_id = id).all()
+    return render_template('currentThread.html', thread=thread, post=post)
 
 # 過去ログ表示
 @app.route('/PastLog/<int:id>')
-def show_thread1(id): # 名前+1
+def show_log(id): # 名前+1
     # 対象データ取得
-    log = Thread.query.filter_by(id=id, flag=False).first()
-    return render_template('.html', log=log)
+    log = Thread.query.filter_by(id=id, is_active=False).first()
+    post = Post.query.filter_by(threads_id = id).all()
+    return render_template('pastThread.html', log=log, post=post)
 #〜〜〜〜〜ここから投稿したフォームをデータベースに送るルーティング（漢）〜〜〜〜〜〜〜
 
 @app.route('/create_thread', methods=['POST'])
@@ -106,7 +114,7 @@ def create_thread():
         title=title,
         created_at=datetime.now(),
         updated_at=datetime.now(),
-        flag=True  # 初期状態ではスレッドは有効
+        is_active=True  # 初期状態ではスレッドは有効
     )
     db.session.add(new_thread)
     db.session.commit()
@@ -127,19 +135,75 @@ def create_thread():
     return redirect(url_for('current_thread_list'))
 
 #〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+# 新しい投稿
+@app.route('/add_post/<int:thread_id>', methods=['POST'])
+def add_post(thread_id):
+    name = request.form['name']
+    content = request.form['content']
+    ip_address = request.remote_addr
 
+    new_post = Post(
+        threads_id=thread_id,
+        name=name,
+        ip_address=ip_address,
+        content=content,
+        created_at=datetime.now(),
+        parent_post_id=None  # 最初の投稿なので親IDはNone
+    )
+    db.session.add(new_post)
+    db.session.commit()
 
-@app.route('/search')
-def search_threads():
-    keyword = request.args.get('search', '')
+    return redirect(url_for('show_thread', id=thread_id))
+
+# 過去ログ検索
+@app.route('/PastLog/search', methods=['POST'])
+def search_log():
+    keyword = request.form['search_PastLog']
     if keyword:
-        threads = Thread.query.filter(Thread.title.ilike(f"%{keyword}%"),Thread.flag == False).all()
+        threads = Thread.query.filter(Thread.title.like(f"%{keyword}%"),Thread.is_active == False).all()
     else:
         threads = []
 
-    return render_template('searchPastLog.html', threads=threads, keyword=keyword)
+    return render_template('searchPastLog.html', logs=threads, keyword=keyword)
+
+# 現行スレッドを過去ログへ移動
+def setThreadArchived():
+    expire_time = datetime.now() - timedelta(hours=1)
+    threads = Thread.query.filter(
+        Thread.updated_at < expire_time,
+        Thread.is_active == True
+    ).all()
+    print(expire_time)
+
+    for thread in threads:
+        thread.is_active = False
+    db.session.commit()
+
+
+
+# initialize scheduler
+scheduler = APScheduler()
+# if you don't wanna use a config, you can set options here:
+# scheduler.api_enabled = True
+scheduler.init_app(app)
+scheduler.start()
+@scheduler.task('interval', id='do_job_1', seconds=30, misfire_grace_time=900)
+# 現行スレッドを過去ログへ移動
+def setThreadArchived():
+    with app.app_context():
+        expire_time = datetime.now() - timedelta(hours=1)
+        threads = Thread.query.filter(
+            Thread.updated_at < expire_time,
+            Thread.is_active == True
+        ).all()
+        print(expire_time)
+
+        for thread in threads:
+            thread.is_active = False
+        db.session.commit()
 # ==================================================
 # 実行
 # ==================================================
 if __name__ == '__main__':
     app.run()
+
