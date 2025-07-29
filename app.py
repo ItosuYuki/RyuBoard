@@ -171,7 +171,7 @@ def search_log():
 def current_search():
     keyword = request.form['current_search']
     if keyword:
-        threads = Thread.query.filter(Thread.title.like(f"%{keyword}%"),Thread.is_active == False).all()
+        threads = Thread.query.filter(Thread.title.like(f"%{keyword}%"),Thread.is_active == True).all()
     else:
         threads = []
 
