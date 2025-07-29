@@ -24,7 +24,7 @@
 
             {% for thread in threads %} 
             <td><a href="{{ url_for('show_thread', id=thread.id)}}">{{thread.title}}</a></td>
-            <td>{{thread.name}}</td>
+            <td>{{thread.name}}</br></td>
 
             {% endfor %}
         </div>
