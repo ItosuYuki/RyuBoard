@@ -170,7 +170,9 @@ def search_log():
     return render_template('searchPastLog.html', logs=threads, keyword=keyword)
 
 
-# 現行スレ検索
+
+# 現行スレッド検索
+
 @app.route('/currentLog/search', methods=['POST'])
 def current_search():
     keyword = request.form['current_search']

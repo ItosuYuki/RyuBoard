@@ -23,9 +23,10 @@
         <div class="display">
 
             {% for thread in threads %} 
-            <td><a href="{{ url_for('show_thread', id=thread.id)}}">{{thread.title}}</a></td>
-            <td>{{thread.name}}</td>
-
+                {% if thread.is_active %}
+                    <td><a href="{{ url_for('show_thread', id=thread.id) }}">{{ thread.title }}</a></td>
+                    <td>{{ thread.name }}<br></td>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
