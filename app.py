@@ -32,6 +32,8 @@ Migrate(app, db)
 #==================================================
 # モデル
 #==================================================
+from sqlalchemy import func
+
 # 現行スレッド
 class Thread(db.Model):
     # テーブル名
@@ -47,7 +49,12 @@ class Thread(db.Model):
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     # 現行かログか
     is_active = db.Column(db.Boolean, nullable=False, default=True)
+    # スレッド内の投稿数
+    posts = db.relationship('Post', backref='thread', lazy=True)
 
+    @property
+    def post_count(self):
+        return db.session.query(func.count(Post.id)).filter(Post.threads_id == self.id).scalar()
 
 class Post(db.Model):
     # テーブル名
