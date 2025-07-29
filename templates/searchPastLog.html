@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PastLog</title>
+    <title>SearchPastLog</title>
     <link rel="stylesheet" href="../static/pastLog.css" type="text/css">
 </head>
 <body>
     <header>
         <a href="{{ url_for('current_thread_list')}}">[←TOPへ戻る]</a>
-        <h1>過去ログ一覧</h1>
+        <h1>過去ログ検索結果</h1>
     </header>
     <div>
         <form method="POST" action="{{ url_for('search_log') }}">
@@ -21,22 +21,28 @@
         </form>
     </div>
     <main>
-        <ul class="log-list">
-        {% for log in logs %}
+        <h2>「{{ keyword }}」の検索結果</h2>
+
+        {% if logs %}
+            <ul>
+            {% for log in logs %}
             <li class="log-item">
-                <div class="log-info">
-                    <a href="{{ url_for('show_log', id=log.id) }}">
+                <div class="log-info"></div>
+                    <a href="{{ url_for('show_thread', id=log.id) }}">
                         <div class="log-title">
                             {{log.title}}
                         </div>
-                        <div class="log-dates">
+                        <div class="log-date">
                             {{log.created_at.strftime('%Y-%m-%d')}} - {{log.updated_at.strftime('%Y-%m-%d')}}
                         </div>
                     </a>
                 </div>
             </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>該当するスレッドはありません。</p>
+        {% endif %}
     </main>
 </body>
 </html>
