@@ -5,14 +5,20 @@ from flask_migrate import Migrate
 from datetime import datetime
 #〜〜〜〜〜〜〜ここのやつらを追加（漢）〜〜〜〜〜〜〜
 from flask import request, redirect, url_for
-from datetime import datetime
+#_______________ここのやつら追加(海)____________
+from datetime import timedelta
+from flask_apscheduler import APScheduler
 
-#〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+# set configuration values(海)
+class Config:
+    SCHEDULER_API_ENABLED = True
+
 
 # ==================================================
 # インスタンス生成
 # ==================================================
 app = Flask(__name__)
+app.config.from_object(Config()) #(海)
 
 # ==================================================
 # Flaskに対する設定
@@ -44,7 +50,7 @@ class Thread(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     # 最終更新日時
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
-
+    # 現行かログか
     flag = db.Column(db.Boolean, nullable=False)
 
 
@@ -75,7 +81,7 @@ class Post(db.Model):
 def current_thread_list():
     # 最終更新日時が新しい順に取り出す
     threads = Thread.query.order_by(Thread.updated_at.desc()).all()
-    return render_template('home.html', items=threads) #←ここcurrentThread.htmlからhome.htmlに変えた。threads=threadsからitems=threadsにしてitemsに値を渡すようにした（漢）
+    return render_template('home.html', items=threads) #←ここcurrentThread.htmlからhome.htmlに変えた（漢）。items=threadsをthreads=threadsに直した（海）。
 
 #〜〜〜〜〜ここから投稿したフォーム（1の本文とスレッド）をデータベースに送るルーティング（漢）〜〜〜〜〜〜〜
 
@@ -118,7 +124,7 @@ def create_thread():
 @app.route('/PastLog/')
 def past_log_list():
     # 作成日時が新しい順に取り出す
-    logs = Log.query.order_by(Log.created_at.desc()).all()
+    logs = Thread.query.filter_by(is_active=False).order_by(Thread.created_at.desc()).all()#Threadの属性is_activeがfalseの時にそのログを表示するように（海）
     return render_template('pastLog.html', logs=logs)
 
 # 現行スレッド表示
