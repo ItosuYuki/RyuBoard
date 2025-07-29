@@ -100,7 +100,7 @@ def show_log(id): # 名前+1
     log = Thread.query.filter_by(id=id, is_active=False).first()
     post = Post.query.filter_by(threads_id = id).all()
     return render_template('pastThread.html', log=log, post=post)
-#〜〜〜〜〜ここから投稿したフォームをデータベースに送るルーティング（漢）〜〜〜〜〜〜〜
+#〜〜〜〜〜ここから投稿したフォームをデータベースに送るルーティング〜〜〜〜〜〜〜
 
 @app.route('/create_thread', methods=['POST'])
 def create_thread():
@@ -122,7 +122,7 @@ def create_thread():
     # 新しい投稿をデータベースに追加
     new_post = Post(
         threads_id=new_thread.id,
-        name="名無しさん",  # 投稿者名（仮）
+        name="名無し",  # 投稿者名（仮）
         ip_address=ip_address,
         content=content,
         created_at=datetime.now(),
