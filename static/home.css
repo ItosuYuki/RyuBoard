@@ -30,6 +30,13 @@
     border: 1px solid #999;
 }
 
+/* 海 */
+.item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .txt{
     display: inline-block;
     width: 100%;

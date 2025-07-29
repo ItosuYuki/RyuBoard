@@ -8,11 +8,11 @@
 </head>
 <body>
     <header>
-        <a href="#">[←TOPへ戻る]</a>
+        <a href="{{ url_for('current_thread_list')}}">[←TOPへ戻る]</a>
         <h1>過去ログ検索結果</h1>
     </header>
     <div>
-        <form method="GET" action="{{ url_for('search_PastLog') }}">
+        <form method="POST" action="{{ url_for('search_log') }}">
             <label for="content">過去ログ検索</label><br>
             <div class="input-group">
                 <input type="text" id="search" name="search_PastLog" placeholder="キーワード入力欄" class="text-input" required>
@@ -23,23 +23,26 @@
     <main>
         <h2>「{{ keyword }}」の検索結果</h2>
 
-        {% if threads %}
+        {% if logs %}
             <ul>
             {% for log in logs %}
             <li class="log-item">
-                <a href="{{ url_for('show_thread', id=thread.id) }}">
-                    <div class="log-title">
-                        {{log.title}}
-                    </div>
-                    <div class="log-date">
-                        {{log.created_at.strftime('%Y-%m-%d')}} - {{log.down_at.strftime('%Y-%m-%d')}}
-                    </div>
-                </a>
+                <div class="log-info"></div>
+                    <a href="{{ url_for('show_thread', id=log.id) }}">
+                        <div class="log-title">
+                            {{log.title}}
+                        </div>
+                        <div class="log-date">
+                            {{log.created_at.strftime('%Y-%m-%d')}} - {{log.updated_at.strftime('%Y-%m-%d')}}
+                        </div>
+                    </a>
+                </div>
             </li>
-        {% endfor %}
+            {% endfor %}
             </ul>
         {% else %}
             <p>該当するスレッドはありません。</p>
+        {% endif %}
     </main>
 </body>
 </html>
