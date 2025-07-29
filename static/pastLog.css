@@ -1,0 +1,109 @@
+@charset "utf-8";
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 60px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+}
+
+header a {
+    position: absolute;
+    left: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.search-box {
+    border: 1px solid #444;   /* 全体枠 */
+    padding: 10px;
+    max-width: 600px;
+    margin: 20px auto;        /* 中央寄せ */
+    background-color: #fff;
+}
+
+.search-box label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.input-group {
+    display: flex;
+    margin-top: 8px;
+}
+
+.text-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #444;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+}
+
+.button {
+    padding: 8px 16px;
+    border: 1px solid #444;
+    background-color: #555;
+    color: white;
+    border-radius: 0 5px 5px 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #333;
+}
+
+main {
+    width: 100%;
+    padding: 0 20px; /* 端に余白が欲しければ追加 */
+    box-sizing: border-box;
+}
+
+.log-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.log-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #444;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+.log-title {
+    font-weight: bold;
+    flex: 1;
+}
+
+.log-dates {
+    white-space: nowrap;
+    margin-left: 20px;
+    font-family: monospace;
+}
+
+.log-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

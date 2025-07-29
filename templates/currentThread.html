@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
+
+<!--コメントは全部漢-->
 <head>
     <meta charset="UTF-8">
     <title>{{ thread.title }}</title>
@@ -86,7 +88,7 @@
 
 {% if is_active %}
 <div class="form-section">新しく書き込む</div>
-<form action="{{ url_for('add_post', thread_id=thread.id) }}" method="post">
+<form method="POST" action="{{ url_for('add_post', thread_id=thread.id) }}" >
     <label>名前（省略可）</label>
     <input type="text" name="name" placeholder="名前を入力">
 

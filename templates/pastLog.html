@@ -1,0 +1,43 @@
+<!--海-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PastLog</title>
+    <link rel="stylesheet" href="../static/pastLog.css" type="text/css">
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('current_thread_list')}}">[←TOPへ戻る]</a>
+        <h1>過去ログ一覧</h1>
+    </header>
+    <div>
+        <form method="POST" action="{{ url_for('search_log') }}">
+            <label for="content">過去ログ検索</label><br>
+            <div class="input-group">
+                <input type="text" id="search" name="search_PastLog" placeholder="キーワード入力欄" class="text-input" required>
+                <input type="submit" value="検索" class="button">
+            </div>
+        </form>
+    </div>
+    <main>
+        <ul class="log-list">
+        {% for log in logs %}
+            <li class="log-item">
+                <div class="log-info">
+                    <a href="{{ url_for('show_log', id=log.id) }}">
+                        <div class="log-title">
+                            {{log.title}}
+                        </div>
+                        <div class="log-dates">
+                            {{log.created_at.strftime('%Y-%m-%d')}} - {{log.updated_at.strftime('%Y-%m-%d')}}
+                        </div>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    </main>
+</body>
+</html>
