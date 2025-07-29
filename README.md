@@ -28,15 +28,7 @@ cd RyuBoard
 pip install flask_apscheduler
 ```
 
-### 3. データベースの初期化
-
-```
-flask db init
-flask db migrate -m "initial migration"
-flask db upgrade
-```
-
-### 4. アプリケーションの起動
+### 3. アプリケーションの起動
 ```
 python app.py
 ```
