@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>現行スレ検索結果</title>
+    <link rel="stylesheet" href="../static/pastLog.css" type="text/css">
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('current_thread_list') }}">[←TOPへ戻る]</a>
+        <h1>現行スレ検索結果</h1>
+    </header>
+    <div>
+        <form method="GET" action="{{ url_for('current_search') }}">
+            <label for="content">現行スレ検索</label><br>
+            <div class="input-group">
+                <input type="text" id="search" name="current_search" placeholder="キーワード入力欄" class="text-input" required>
+                <input type="submit" value="検索" class="button">
+            </div>
+        </form>
+    </div>
+    <main>
+        <h2>「{{ keyword }}」の検索結果</h2>
+
+        {% if logs %}
+            <ul>
+            {% for log in logs %}
+            <li class="log-item">
+                <a href="{{ url_for('show_thread', id=log.id) }}">
+                    <div class="log-title">
+                        {{log.title}}
+                    </div>
+                    <div class="log-date">
+                        {{log.created_at.strftime('%Y-%m-%d')}} - {{log.updated_at.strftime('%Y-%m-%d')}}
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+            </ul>
+        {% else %}
+            <p>該当するスレッドはありません。</p>
+        {% endif %}
+    </main>
+</body>
+</html>

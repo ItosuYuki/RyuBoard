@@ -15,17 +15,17 @@
     <div class="space">
         <div class="cards">
             <div class="card">＜現行スレッド一覧＞</div>
-            <form class="right" method="POST" action="#">
-                <input class="text-input" type="text" name="thread_title" placeholder="現行スレ検索" required>
+            <form class="right" method="POST" action="{{url_for('current_search') }}">
+                <input class="text-input" type="text" name="current_search" placeholder="現行スレ検索" required>
                 <input type="submit" value="検索" class="button">
             </form>    
         </div>
         <div class="display">
-            {% for thread in threads %} <!-- item in itemsをthread in itemsに変えた -->
-            <div class="item">
-                <td><a href="{{ url_for('show_thread', id=thread.id)}}">{{thread.title}}</a></td><!--temの表示をすべてthreadに変え、ビュー名を#からshow_threadに変えた -->
-                <td>{{thread.name}}</td><!--こっちもitemをthreadに変えた-->
-            </div>
+
+            {% for thread in threads %} 
+            <td><a href="{{ url_for('show_thread', id=thread.id)}}">{{thread.title}}</a></td>
+            <td>{{thread.name}}</td>
+
             {% endfor %}
         </div>
     </div>
