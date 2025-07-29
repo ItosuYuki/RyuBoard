@@ -166,7 +166,7 @@ def search_log():
 
     return render_template('searchPastLog.html', logs=threads, keyword=keyword)
 
-# 現行ログ検索
+# 現行スレ検索
 @app.route('/currentLog/search', methods=['POST'])
 def current_search():
     keyword = request.form['current_search']
@@ -177,17 +177,6 @@ def current_search():
 
     return render_template('searchCurrent.html', logs=threads, keyword=keyword)
 
-# 現行スレッドを過去ログへ移動
-def setThreadArchived():
-    expire_time = datetime.now() - timedelta(hours=1)
-    threads = Thread.query.filter(
-        Thread.updated_at < expire_time,
-        Thread.is_active == True
-    ).all()
-
-    for thread in threads:
-        thread.is_active = False
-    db.session.commit()
 
 
 
@@ -197,16 +186,15 @@ scheduler = APScheduler()
 # scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
-@scheduler.task('interval', id='do_job_1', seconds=30, misfire_grace_time=900)
+@scheduler.task('interval', id='do_job_1', seconds=60, misfire_grace_time=900)
 # 現行スレッドを過去ログへ移動
 def setThreadArchived():
     with app.app_context():
-        expire_time = datetime.now() - timedelta(hours=1)
+        expire_time = datetime.now() - timedelta(Days=7)
         threads = Thread.query.filter(
             Thread.updated_at < expire_time,
             Thread.is_active == True
         ).all()
-        print(expire_time)
 
         for thread in threads:
             thread.is_active = False
