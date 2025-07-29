@@ -24,8 +24,7 @@
 
             {% for thread in threads %} 
                 {% if thread.is_active %}
-                    <td><a href="{{ url_for('show_thread', id=thread.id) }}">{{ thread.title }}</a></td>
-                    <td>{{ thread.name }}<br></td>
+                    <td><a href="{{ url_for('show_thread', id=thread.id) }}">{{ thread.title }}({{ thread.post_count }})<br></a></td>
                 {% endif %}
             {% endfor %}
         </div>
