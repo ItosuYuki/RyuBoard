@@ -35,7 +35,7 @@
     <form class="frame" method="POST" action="{{ url_for('create_thread') }}"> <!--フォームの action 属性を、データを処理するルート（例えば /create_thread）に設定 -->
         <div>＜スレ立て＞</div>
         <input class="txt" type="text" name="thread_title" placeholder="スレッドタイトル" required>    
-        <textarea name="content" rows="3" cols="50" wrap="hard" class="txt"></textarea> <!--全角ダブルクォーテーションを半角に修正-->
+        <textarea name="content" rows="3" cols="50" wrap="hard" class="txt" required></textarea> <!--全角ダブルクォーテーションを半角に修正-->
         <div class="right"><input type="submit" value="投稿" class="button"></div>
     </form>
 

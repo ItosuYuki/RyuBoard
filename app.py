@@ -196,7 +196,7 @@ scheduler.start()
 # 現行スレッドを過去ログへ移動
 def setThreadArchived():
     with app.app_context():
-        expire_time = datetime.now() - timedelta(Days=7)
+        expire_time = datetime.now() - timedelta(days=7)
         threads = Thread.query.filter(
             Thread.updated_at < expire_time,
             Thread.is_active == True
